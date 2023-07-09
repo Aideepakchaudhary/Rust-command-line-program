@@ -8,7 +8,9 @@ pub struct Config {
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> { //dyn -> dynamic
     let content = fs::read_to_string(config.file_path)?;
-    println!("with text:\n{content}");
+    for line in search(&config.query, &content) {
+        println!("{line}");
+    }
 
     Ok(())
 }
@@ -23,4 +25,14 @@ impl Config {
 
         Ok(Config {query, file_path})
     }
+}
+
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let mut results = Vec::new();
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+    results
 }
